@@ -1,0 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from "react";
+import Main from "./components/Main";
+import theme from "./styles/theme";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import "./App.css";
+import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
+import { MapContainer } from "react-leaflet";
+
+function App() {
+  const [mapWidth, setMapWidth] = useState("70vw");
+  return (
+    <ThemeProvider theme={theme}>
+      <MapContainer
+        zoom={3}
+        center={[20, 0]}
+        zoomControl={false}
+        style={{
+          width: mapWidth,
+          height: "calc(100vh)",
+          left: `calc(100vw - ${mapWidth})`,
+        }}
+      >
+        <Main key="main" />
+      </MapContainer>
+    </ThemeProvider>
+  );
+}
+
+export default App;
