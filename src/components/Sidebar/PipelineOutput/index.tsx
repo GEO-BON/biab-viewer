@@ -76,7 +76,7 @@ export function PipelineOutput(props: any) {
           </CustomSelect>
           <CustomButtonGreen
             onClick={(event: any) =>
-              handleClick(event, selectedOutput, outputType)
+              handleClick(event, outputObj.outputs, outputObj.type)
             }
           >
             Add to map
@@ -89,9 +89,7 @@ export function PipelineOutput(props: any) {
       setForms(
         <CustomButtonGreen
           onClick={(event: any) => {
-            if (selectedOutput !== "" && outputType !== "") {
-              handleClick(event, selectedOutput, outputType);
-            }
+            handleClick(event, outputObj.outputs, outputObj.type);
           }}
         >
           Add to map

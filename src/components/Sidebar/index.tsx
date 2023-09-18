@@ -97,9 +97,9 @@ export default function Sidebar(props: any) {
     }
   }, [pathname]);
 
-  const displayOutput = () => {
-    if (outputType.includes("geotiff")) {
-      setSelectedLayerURL(selectedOutput);
+  const displayOutput = (output: string, type: string) => {
+    if (type.includes("geotiff")) {
+      setSelectedLayerURL(output);
     }
   };
 
