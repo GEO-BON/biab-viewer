@@ -11,9 +11,7 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <Router basename="/viewer">
-      <App />
-    </Router>
+    <App />
   </React.StrictMode>
 );
 

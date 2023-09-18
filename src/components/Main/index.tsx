@@ -14,10 +14,11 @@ import {
   GetCOGStatsGeojson,
   GetMultipleCOGStatsGeojson,
 } from "../../helpers/api";
+import { createPipeline4Display } from "../../helpers/biab_api";
 import StatsModal from "../StatsModal";
 import { cmap } from "../../helpers/colormaps";
 import { createRangeLegendControl } from "../SimpleLegend";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import type { FeatureCollection } from "geojson";
 import { useMap } from "react-leaflet";
 
@@ -42,6 +43,8 @@ export default function Main(props: any) {
   const [timeSeriesStats, setTimeSeriesStats] = useState({});
   const [openStatsModal, setOpenStatsModal] = useState(false);
   const [showStatsButton, setShowStatsButton] = useState(true);
+  const [pipelineData, setPipelineData] = useState({});
+  const [pipelineRunId, setPipelineRunId] = useState("");
 
   const emptyFC: FeatureCollection = {
     type: "FeatureCollection",
@@ -50,11 +53,20 @@ export default function Main(props: any) {
   const [geojson, setGeojson] = useState<FeatureCollection>(emptyFC);
 
   const map = useMap();
+  const navigate = useNavigate();
 
   const logIt = (event: any) => {
     event.stopPropagation();
     setLogTransform(event.target.checked);
   };
+
+  useEffect(() => {
+    if (pipelineRunId) {
+      createPipeline4Display(pipelineRunId).then((res: any) => {
+        setPipelineData(res);
+      });
+    }
+  }, [pipelineRunId]);
 
   useEffect(() => {
     if (selectedLayerURL !== "" && typeof selectedLayerURL !== "undefined") {
@@ -199,6 +211,8 @@ export default function Main(props: any) {
   const sidebarProps = {
     item,
     collection,
+    pipelineData,
+    setPipelineRunId,
     setSelectedLayerURL,
     setSelectedLayerAssetName,
     setColormap,
@@ -227,7 +241,7 @@ export default function Main(props: any) {
     <>
       <Routes>
         <Route
-          path="/:collection/:item/"
+          path="/:pipeline_run_id/"
           element={<Sidebar {...sidebarProps} />}
         ></Route>
         <Route path="/" element={<Sidebar {...sidebarProps} />}></Route>
