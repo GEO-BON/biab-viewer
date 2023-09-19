@@ -12,21 +12,35 @@ proj4.defs([
   ],
 ]);
 
-export default function CsvToGeojson(url: string, delimiter: string) {
-  return CsvToArray(url, delimiter).then((r) => {
-    const geo: any = { type: "FeatureCollection", features: [] };
-    r?.map((row: any) => {
-      const coords = row.pos.map((str: string) => parseFloat(str));
-      geo.features.push({
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: proj4("EPSG:3857", "EPSG:4326", coords),
-        },
-        properties: {},
-      });
+export default async function CsvToGeojson(url: string, delimiter: string) {
+  return await CsvToArray(url, delimiter).then((r) => {
+    let features: any = [];
+    features = r?.map((row: any) => {
+      if (row.pos[0] > -9999999 && row.pos[0] < 99999999) {
+        const coords = proj4(
+          "EPSG:3857",
+          "EPSG:4326",
+          row.pos.map((str: string) => parseFloat(str))
+        );
+
+        return {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: coords,
+          },
+          properties: { this: "that" },
+        };
+      }
     });
-    return geo;
+    /*const feat = features?.filter((f: any) => {
+      if (f) {
+        f.geometry.coordinates[0] > -180 && f.geometry.coordinates[0] < 180;
+      } else {
+        return false;
+      }
+    });*/
+    return { type: "FeatureCollection", features: features };
   });
 }
 

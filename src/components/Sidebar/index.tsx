@@ -87,7 +87,9 @@ export default function Sidebar(props: any) {
     } else if (type.includes("value")) {
       CsvToGeojson(`${import.meta.env.VITE_BIAB_HOST}${output}`, "\t").then(
         (r) => {
-          setGeojson(r);
+          if (r?.features?.length > 0) {
+            setGeojson(r);
+          }
         }
       );
     }
