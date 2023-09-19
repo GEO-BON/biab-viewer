@@ -32,28 +32,31 @@ export function PipelineOutput(props: any) {
     outputType,
   } = props;
   const [forms, setForms] = useState(<></>);
+  const [selectedItem, setSelectedItem] = useState(
+    outputObj.outputs.split(",")[0]
+  );
+
+  const outs = outputObj.outputs.split(",");
 
   const handleSelect = (value: string) => {
     setSelectedOutput(value);
+    setSelectedItem(value);
   };
+
   const handleClick = (event: any, out: string, ot: string) => {
     event.stopPropagation();
     event.preventDefault();
-    displayOutput(out, ot);
+    if (out !== "") {
+      displayOutput(out, ot);
+    } else {
+      displayOutput(selectedItem, ot);
+    }
   };
 
   useEffect(() => {
-    setOutputType(outputObj.type);
-    if (Array.isArray(outputObj.outputs)) {
-      setSelectedOutput(outputObj.outputs[0]);
-      const mitems: any = [];
-      _.mapObject(outputObj.outputs, (o: any) => {
-        mitems.push(
-          <CustomMenuItem key={`it-${o}`} value={o}>
-            {o}
-          </CustomMenuItem>
-        );
-      });
+    if (outputObj.type.includes("[]")) {
+      const outs = outputObj.outputs.split(",");
+      //setSelectedItem(outs[0]);
       const form = (
         <FormControl
           variant="standard"
@@ -67,17 +70,20 @@ export function PipelineOutput(props: any) {
             <Typography color="primary.light">Choose layer</Typography>
           </InputLabel>
           <CustomSelect
-            id="demo-simple-select-standard"
-            value={selectedOutput}
+            id="simple-select-standard"
+            value={selectedItem}
             onChange={(event: any) => handleSelect(event.target.value)}
             label="Layer"
           >
-            {mitems}
+            {outs.map((o: any) => (
+              <CustomMenuItem key={`it-${o}`} value={o}>
+                {o.split("/").pop()}
+              </CustomMenuItem>
+            ))}
           </CustomSelect>
           <CustomButtonGreen
-            onClick={(event: any) =>
-              handleClick(event, outputObj.outputs, outputObj.type)
-            }
+            key={`but-${outputObj.outputs}`}
+            onClick={(event: any) => handleClick(event, "", outputObj.type)}
           >
             Add to map
           </CustomButtonGreen>
@@ -88,6 +94,7 @@ export function PipelineOutput(props: any) {
       setSelectedOutput(outputObj.outputs);
       setForms(
         <CustomButtonGreen
+          key={`but-${outputObj.outputs}`}
           onClick={(event: any) => {
             handleClick(event, outputObj.outputs, outputObj.type);
           }}
@@ -108,7 +115,48 @@ export function PipelineOutput(props: any) {
           1
         )}`}
       </Typography>
-      {forms}
+      {outputObj.type.includes("[]") && (
+        <FormControl
+          variant="standard"
+          sx={{
+            m: 1,
+            minWidth: 200,
+            width: "80%",
+          }}
+        >
+          <InputLabel id="collection-label">
+            <Typography color="primary.light">Choose layer</Typography>
+          </InputLabel>
+          <CustomSelect
+            id="simple-select-standard"
+            value={selectedItem}
+            onChange={(event: any) => handleSelect(event.target.value)}
+            label="Layer"
+          >
+            {outs.map((o: any) => (
+              <CustomMenuItem key={`it-${o}`} value={o}>
+                {o.split("/").pop()}
+              </CustomMenuItem>
+            ))}
+          </CustomSelect>
+          <CustomButtonGreen
+            key={`but-${outputObj.outputs}`}
+            onClick={(event: any) => handleClick(event, "", outputObj.type)}
+          >
+            Add to map
+          </CustomButtonGreen>
+        </FormControl>
+      )}
+      {!outputObj.type.includes("[]") && (
+        <CustomButtonGreen
+          key={`but-${outputObj.outputs}`}
+          onClick={(event: any) => {
+            handleClick(event, outputObj.outputs, outputObj.type);
+          }}
+        >
+          Add to map
+        </CustomButtonGreen>
+      )}
     </Item>
   );
 }

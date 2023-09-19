@@ -59,7 +59,7 @@ export const GetScriptOutputs = async (script_run_output_path: string) => {
 
 export const createPipeline4Display = async (pipeline_run_id: string) => {
   const pipeline_id = pipeline_run_id.split(">").slice(0, -1).join(">");
-  const base_url = import.meta.env.VITE_BIAB_HOST;
+  const base_url = import.meta.env.VITE_BIAB_HOST_LOCAL;
 
   return GetPipelineOutputs(pipeline_id).then((po: any) => {
     return GetPipelineRunOutputs(pipeline_run_id).then((pro: any) => {

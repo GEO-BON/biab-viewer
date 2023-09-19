@@ -53,7 +53,6 @@ export default function Main(props: any) {
   const [geojson, setGeojson] = useState<FeatureCollection>(emptyFC);
 
   const map = useMap();
-  const navigate = useNavigate();
 
   const logIt = (event: any) => {
     event.stopPropagation();
@@ -71,7 +70,7 @@ export default function Main(props: any) {
   useEffect(() => {
     if (selectedLayerURL !== "" && typeof selectedLayerURL !== "undefined") {
       GetCOGStats(selectedLayerURL, logTransform).then((l: any) => {
-        const tiler = `https://tiler.biodiversite-quebec.ca/cog/tiles/{z}/{x}/{y}`;
+        const tiler = `${import.meta.env.VITE_TILER_URL}/cog/tiles/{z}/{x}/{y}`;
         let data = [];
         if (Object.keys(l).includes("data")) {
           data = l.data[Object.keys(l.data)[0]];

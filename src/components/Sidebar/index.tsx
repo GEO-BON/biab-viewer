@@ -20,6 +20,7 @@ import {
   GetCountryGeojson,
   GetStateGeojson,
 } from "../../helpers/api";
+import CsvToGeojson from "../../helpers/csv_processing";
 import { Item } from "./styles";
 import _ from "underscore";
 import {
@@ -47,27 +48,10 @@ export default function Sidebar(props: any) {
   const {
     t = (text: string) => text,
     setSelectedLayerURL,
-    setSelectedLayerAssetName,
-    setColormap,
-    setColormapList,
-    setSelectedCountry,
-    selectedCountry,
-    setSelectedState,
-    selectedState,
     pipelineData,
     setPipelineRunId,
     geojson,
-    showStatsButton,
-    isTimeSeriesCollection,
-    generateTimeSeries,
-    generateStats,
-    handleAddLocationChange,
-    qualcmaps,
-    quantcmaps,
-    colormap,
-    logIt,
-    setIsTimeSeriesCollection,
-    setTimeSeriesLayers,
+    setGeojson,
     map,
   } = props;
 
@@ -100,6 +84,12 @@ export default function Sidebar(props: any) {
   const displayOutput = (output: string, type: string) => {
     if (type.includes("geotiff")) {
       setSelectedLayerURL(output);
+    } else if (type.includes("value")) {
+      CsvToGeojson(`${import.meta.env.VITE_BIAB_HOST}${output}`, "\t").then(
+        (r) => {
+          setGeojson(r);
+        }
+      );
     }
   };
 

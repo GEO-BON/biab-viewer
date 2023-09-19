@@ -6,8 +6,8 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable radix */
 /* eslint-disable no-nested-ternary */
-import axios from 'axios';
-import _ from 'underscore';
+import axios from "axios";
+import _ from "underscore";
 
 interface ITranslation {
   /**
@@ -40,9 +40,9 @@ export const addTranslation = async (
 
   if (source.length !== undefined) {
     source.map((item: ITranslation) => {
-      const key: string = item['vernacular_fr'] || '';
-      resources['en']['translation'][key] = item['vernacular_en'];
-      resources['fr']['translation'][key] = item['vernacular_fr'];
+      const key: string = item["vernacular_fr"] || "";
+      resources["en"]["translation"][key] = item["vernacular_en"];
+      resources["fr"]["translation"][key] = item["vernacular_fr"];
       return item;
     });
   }
@@ -57,15 +57,15 @@ export const addTranslation = async (
   };
 
   i18next.addResourceBundle(
-    'en',
-    'translation',
+    "en",
+    "translation",
     resources.en.translation,
     true,
     true
   );
   i18next.addResourceBundle(
-    'fr',
-    'translation',
+    "fr",
+    "translation",
     resources.fr.translation,
     true,
     true
@@ -75,10 +75,10 @@ export const addTranslation = async (
 
 export const GetStac = async (endpoint: string, paramObj: any) => {
   let result;
-  const base_url = 'https://io.biodiversite-quebec.ca/stac' as string;
+  const base_url = "https://io.biodiversite-quebec.ca/stac" as string;
   try {
     result = await axios({
-      method: 'get',
+      method: "get",
       baseURL: `${base_url}${endpoint}`,
       params: { limit: 100 },
     });
@@ -90,10 +90,10 @@ export const GetStac = async (endpoint: string, paramObj: any) => {
 
 export const GetStacSearch = async (searchObj: any) => {
   let result;
-  const base_url = 'https://io.biodiversite-quebec.ca/stac/search' as string;
+  const base_url = "https://io.biodiversite-quebec.ca/stac/search" as string;
   try {
     result = await axios({
-      method: 'post',
+      method: "post",
       baseURL: `${base_url}`,
       data: searchObj,
     });
@@ -105,17 +105,17 @@ export const GetStacSearch = async (searchObj: any) => {
 
 export const GetCOGStats = async (link: any, logTransform: boolean) => {
   let result;
-  let expression = 'b1*(b1>0)';
+  let expression = "b1*(b1>0)";
   if (logTransform) {
-    expression = 'sqrt(b1)';
+    expression = "sqrt(b1)";
   }
   const obj = {
     expression: expression,
     url: link,
   };
-  const base_url = `https://tiler.biodiversite-quebec.ca/cog/statistics`;
+  const base_url = `${import.meta.env.VITE_TILER_URL}/cog/statistics`;
   try {
-    result = await axios({ method: 'get', url: base_url, params: obj });
+    result = await axios({ method: "get", url: base_url, params: obj });
   } catch (error) {
     console.log(error);
     result = { data: null };
@@ -126,17 +126,17 @@ export const GetCOGStats = async (link: any, logTransform: boolean) => {
 export const GetCOGStatsGeojson = async (link: any, geojson: any) => {
   let result;
   const obj = { url: link };
-  const base_url = `https://tiler.biodiversite-quebec.ca/cog/statistics`;
+  const base_url = `${import.meta.env.VITE_TILER_URL}/cog/statistics`;
   try {
     result = await axios({
-      method: 'post',
+      method: "post",
       baseURL: base_url,
       withCredentials: false,
       data: geojson,
       params: obj,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     });
   } catch (error) {
@@ -151,9 +151,9 @@ export const GetCOGBounds = async (link: any) => {
   const obj = {
     url: link,
   };
-  const base_url = `https://tiler.biodiversite-quebec.ca/cog/bounds`;
+  const base_url = `${import.meta.env.VITE_TILER_URL}/cog/bounds`;
   try {
-    result = await axios({ method: 'get', url: base_url, params: obj });
+    result = await axios({ method: "get", url: base_url, params: obj });
   } catch (error) {
     console.log(error);
     result = { data: null };
@@ -166,7 +166,7 @@ export const GetCountryList = async () => {
   const base_url = `https://geoio.biodiversite-quebec.ca/country_list`;
   try {
     result = await axios({
-      method: 'get',
+      method: "get",
       url: base_url,
       params: {},
       /*headers: {
@@ -186,7 +186,7 @@ export const GetStateList = async (country_name: string) => {
   const base_url = `https://geoio.biodiversite-quebec.ca/state_list`;
   try {
     result = await axios({
-      method: 'get',
+      method: "get",
       url: base_url,
       params: { country_name: country_name },
     });
@@ -209,7 +209,7 @@ export const GetCountryStats = async (
   };
   try {
     result = await axios({
-      method: 'get',
+      method: "get",
       url: base_url,
       params: params,
     });
@@ -228,12 +228,12 @@ export const GetCountryGeojson = async (country_name: string) => {
   };
   try {
     result = await axios({
-      method: 'get',
+      method: "get",
       url: base_url,
       params: params,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     });
   } catch (error) {
@@ -255,12 +255,12 @@ export const GetStateGeojson = async (
   };
   try {
     result = await axios({
-      method: 'get',
+      method: "get",
       url: base_url,
       params: params,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     });
   } catch (error) {
@@ -278,18 +278,18 @@ export const GetMultipleCOGStatsGeojson2 = async (
     .all(
       cog_urls.map((cu: any) => {
         const obj = { url: cu.url, year: cu.year }; //Year is not a param but used here to be passed down
-        const base_url = `https://tiler.biodiversite-quebec.ca/cog/statistics`;
+        const base_url = `${import.meta.env.VITE_TILER_URL}cog/statistics`;
         let result: any = {};
         try {
           result = axios({
-            method: 'post',
+            method: "post",
             baseURL: base_url,
             withCredentials: false,
             data: geojson,
             params: obj,
             headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
             },
           });
         } catch (error) {
@@ -299,10 +299,10 @@ export const GetMultipleCOGStatsGeojson2 = async (
         return result;
       })
     )
-    .then(responses => {
+    .then((responses) => {
       const resp: any = {};
       responses.map((m: any) => {
-        const y: any = new URLSearchParams(m.request.responseURL).get('year');
+        const y: any = new URLSearchParams(m.request.responseURL).get("year");
         resp[y] = [];
         m.data.features.map((f: any) => {
           resp[y].push(f.properties);
@@ -324,12 +324,12 @@ export const GetMultipleCOGStatsGeojson = async (
   };
   try {
     result = await axios({
-      method: 'post',
+      method: "post",
       url: base_url,
       data: data,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     });
   } catch (error) {
