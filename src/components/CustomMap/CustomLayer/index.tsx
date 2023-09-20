@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import _ from "underscore";
-import { Marker, Tooltip, useMap } from "react-leaflet";
+import { Marker, Tooltip, useMap, GeoJSON } from "react-leaflet";
 import L from "leaflet";
 import { ColorPicker } from "../../ColormapPicker";
+import type { FeatureCollection } from "geojson";
 
 /**
  *
@@ -18,12 +19,19 @@ function CustomLayer(props: any) {
     opacity,
     bounds,
     map,
+    geojsonOutput,
     clearLayers,
   } = props;
   const [tiles, setTiles] = useState(<></>);
   const [basemap, setBasemap] = useState("cartoDark");
   const layerContainer = map.getContainer();
   const layerRef = useRef(null);
+
+  const emptyFC = {
+    type: "FeatureCollection",
+    features: [],
+  };
+  const [data, setData] = useState<FeatureCollection>(emptyFC);
 
   const basemaps: any = {
     osm: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -63,6 +71,12 @@ function CustomLayer(props: any) {
   }, [selectedLayerTiles, opacity]);
 
   useEffect(() => {
+    if (geojsonOutput) {
+      setData(geojsonOutput);
+    }
+  }, [geojsonOutput]);
+
+  useEffect(() => {
     const layer = L.tileLayer(basemaps[basemap], {
       attribution: "Planet",
     });
@@ -75,11 +89,14 @@ function CustomLayer(props: any) {
   }, [bounds]);*/
 
   return (
-    <ColorPicker
-      setColormap={setColormap}
-      colormap={colormap}
-      colormapList={colormapList}
-    />
+    <>
+      <ColorPicker
+        setColormap={setColormap}
+        colormap={colormap}
+        colormapList={colormapList}
+      />
+      {data && <GeoJSON data={data} />}
+    </>
   );
 }
 

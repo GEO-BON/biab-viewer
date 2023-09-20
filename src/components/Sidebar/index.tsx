@@ -52,6 +52,7 @@ export default function Sidebar(props: any) {
     setPipelineRunId,
     geojson,
     setGeojson,
+    setGeojsonOutput,
     map,
   } = props;
 
@@ -88,7 +89,7 @@ export default function Sidebar(props: any) {
       CsvToGeojson(`${import.meta.env.VITE_BIAB_HOST}${output}`, "\t").then(
         (r) => {
           if (r?.features?.length > 0) {
-            setGeojson(r);
+            setGeojsonOutput(r);
           }
         }
       );

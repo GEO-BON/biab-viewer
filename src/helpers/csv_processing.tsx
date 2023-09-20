@@ -29,7 +29,7 @@ export default async function CsvToGeojson(url: string, delimiter: string) {
             type: "Point",
             coordinates: coords,
           },
-          properties: { this: "that" },
+          properties: {},
         };
       }
     });
