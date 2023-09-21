@@ -53,58 +53,6 @@ export function PipelineOutput(props: any) {
     }
   };
 
-  useEffect(() => {
-    if (outputObj.type.includes("[]")) {
-      const outs = outputObj.outputs.split(",");
-      //setSelectedItem(outs[0]);
-      const form = (
-        <FormControl
-          variant="standard"
-          sx={{
-            m: 1,
-            minWidth: 200,
-            width: "80%",
-          }}
-        >
-          <InputLabel id="collection-label">
-            <Typography color="primary.light">Choose layer</Typography>
-          </InputLabel>
-          <CustomSelect
-            id="simple-select-standard"
-            value={selectedItem}
-            onChange={(event: any) => handleSelect(event.target.value)}
-            label="Layer"
-          >
-            {outs.map((o: any) => (
-              <CustomMenuItem key={`it-${o}`} value={o}>
-                {o.split("/").pop()}
-              </CustomMenuItem>
-            ))}
-          </CustomSelect>
-          <CustomButtonGreen
-            key={`but-${outputObj.outputs}`}
-            onClick={(event: any) => handleClick(event, "", outputObj.type)}
-          >
-            Add to map
-          </CustomButtonGreen>
-        </FormControl>
-      );
-      setForms(form);
-    } else {
-      setSelectedOutput(outputObj.outputs);
-      setForms(
-        <CustomButtonGreen
-          key={`but-${outputObj.outputs}`}
-          onClick={(event: any) => {
-            handleClick(event, outputObj.outputs, outputObj.type);
-          }}
-        >
-          Add to map
-        </CustomButtonGreen>
-      );
-    }
-  }, [outputObj]);
-
   return (
     <Item sx={{ background: "none", border: "0px" }}>
       <Typography color="primary.light" sx={{ fontWeight: 600 }}>
@@ -115,7 +63,7 @@ export function PipelineOutput(props: any) {
           1
         )}`}
       </Typography>
-      {outputObj.type.includes("[]") && (
+      {outputObj?.type?.includes("[]") && (
         <FormControl
           variant="standard"
           sx={{
@@ -147,7 +95,7 @@ export function PipelineOutput(props: any) {
           </CustomButtonGreen>
         </FormControl>
       )}
-      {!outputObj.type.includes("[]") && (
+      {!outputObj?.type?.includes("[]") && "type" in outputObj && (
         <CustomButtonGreen
           key={`but-${outputObj.outputs}`}
           onClick={(event: any) => {
@@ -157,6 +105,7 @@ export function PipelineOutput(props: any) {
           Add to map
         </CustomButtonGreen>
       )}
+      {!("type" in outputObj) && <Typography>{outputObj.output}</Typography>}
     </Item>
   );
 }

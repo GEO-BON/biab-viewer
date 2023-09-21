@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import _ from "underscore";
-import { Marker, Tooltip, useMap, GeoJSON } from "react-leaflet";
+import { CircleMarker, Tooltip, useMap, GeoJSON } from "react-leaflet";
 import L from "leaflet";
 import { ColorPicker } from "../../ColormapPicker";
 import type { FeatureCollection } from "geojson";
@@ -27,11 +27,11 @@ function CustomLayer(props: any) {
   const layerContainer = map.getContainer();
   const layerRef = useRef(null);
 
-  const emptyFC = {
+  const emptyFC: FeatureCollection = {
     type: "FeatureCollection",
     features: [],
   };
-  const [data, setData] = useState<FeatureCollection>(emptyFC);
+  const [data, setData] = useState([]);
 
   const basemaps: any = {
     osm: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -58,7 +58,6 @@ function CustomLayer(props: any) {
         opacity: opacity / 100,
       });
       const container = map;
-      //layerRef.selected = layer;
       container.addLayer(layer);
       if (Object.keys(legend).length !== 0) {
         legend.addTo(map);
@@ -71,8 +70,27 @@ function CustomLayer(props: any) {
   }, [selectedLayerTiles, opacity]);
 
   useEffect(() => {
-    if (geojsonOutput) {
-      setData(geojsonOutput);
+    if (geojsonOutput.features.length !== 0) {
+      var geojsonMarkerOptions = {
+        radius: 2,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 0.2,
+        fillOpacity: 0.4,
+      };
+      clearLayers();
+      const l = L.geoJSON(
+        geojsonOutput.features.slice(0, geojsonOutput.features.length - 1),
+        {
+          attribution: "io",
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, geojsonMarkerOptions);
+          },
+        }
+      );
+      l.addTo(map);
+      map.fitBounds(l.getBounds());
     }
   }, [geojsonOutput]);
 
@@ -84,19 +102,12 @@ function CustomLayer(props: any) {
     container.addLayer(layer);
   }, []);
 
-  /*useEffect(() => {
-    map.fitBounds(bounds);
-  }, [bounds]);*/
-
   return (
-    <>
-      <ColorPicker
-        setColormap={setColormap}
-        colormap={colormap}
-        colormapList={colormapList}
-      />
-      {data && <GeoJSON data={data} />}
-    </>
+    <ColorPicker
+      setColormap={setColormap}
+      colormap={colormap}
+      colormapList={colormapList}
+    />
   );
 }
 

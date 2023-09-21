@@ -132,7 +132,6 @@ export default function Sidebar(props: any) {
   useEffect(() => {
     const handleScroll = (e: any) => {
       e.stopPropagation();
-      console.log("Stop");
     };
 
     containerRef.current?.addEventListener("scroll", handleScroll);

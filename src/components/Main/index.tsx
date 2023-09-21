@@ -6,11 +6,13 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Sidebar from "../Sidebar";
 import MapWrapper from "../CustomMap/MapWrapper";
+import L from "leaflet";
 
 import {
   GetCOGStats,
   GetCountryGeojson,
   GetStateGeojson,
+  GetCOGBounds,
   GetCOGStatsGeojson,
   GetMultipleCOGStatsGeojson,
 } from "../../helpers/api";
@@ -45,6 +47,7 @@ export default function Main(props: any) {
   const [showStatsButton, setShowStatsButton] = useState(true);
   const [pipelineData, setPipelineData] = useState({});
   const [pipelineRunId, setPipelineRunId] = useState("");
+  const [bounds, setBounds] = useState([]);
 
   const emptyFC: FeatureCollection = {
     type: "FeatureCollection",
@@ -101,6 +104,14 @@ export default function Main(props: any) {
           `${tiler}?url=${selectedLayerURL}&rescale=${rescale}&${params}`
         );
         setLegend(createRangeLegendControl(min, max, cmap(colormap)));
+      });
+      GetCOGBounds(selectedLayerURL).then((b: any) => {
+        b = b.data.bounds;
+        var mapBounds = L.latLngBounds([
+          [b[1], b[0]],
+          [b[3], b[2]],
+        ]);
+        map.fitBounds(mapBounds);
       });
     } else {
       setSelectedLayerTiles("");

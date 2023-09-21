@@ -16,11 +16,16 @@ export default async function CsvToGeojson(url: string, delimiter: string) {
   return await CsvToArray(url, delimiter).then((r) => {
     let features: any = [];
     features = r?.map((row: any) => {
-      if (row.pos[0] > -9999999 && row.pos[0] < 99999999) {
+      if (
+        row.pos[0] > -9999999 &&
+        row.pos[0] < 99999999 &&
+        row.pos[1] > -9999999 &&
+        row.pos[1] < 99999999
+      ) {
         const coords = proj4(
           "EPSG:3857",
           "EPSG:4326",
-          row.pos.map((str: string) => parseFloat(str))
+          row.pos.map((str: string) => parseFloat(str)).reverse()
         );
 
         return {
@@ -29,7 +34,7 @@ export default async function CsvToGeojson(url: string, delimiter: string) {
             type: "Point",
             coordinates: coords,
           },
-          properties: {},
+          properties: { this: "that" },
         };
       }
     });
