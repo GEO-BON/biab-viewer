@@ -32,9 +32,7 @@ export function PipelineOutput(props: any) {
     outputType,
   } = props;
   const [forms, setForms] = useState(<></>);
-  const [selectedItem, setSelectedItem] = useState(
-    outputObj.outputs.split(",")[0]
-  );
+  const [selectedItem, setSelectedItem] = useState("");
 
   const outs = outputObj.outputs.split(",");
 
@@ -91,7 +89,7 @@ export function PipelineOutput(props: any) {
             key={`but-${outputObj.outputs}`}
             onClick={(event: any) => handleClick(event, "", outputObj.type)}
           >
-            Add to map
+            See on map
           </CustomButtonGreen>
         </FormControl>
       )}
@@ -102,7 +100,7 @@ export function PipelineOutput(props: any) {
             handleClick(event, outputObj.outputs, outputObj.type);
           }}
         >
-          Add to map
+          See on map
         </CustomButtonGreen>
       )}
       {!("type" in outputObj) && <Typography>{outputObj.output}</Typography>}

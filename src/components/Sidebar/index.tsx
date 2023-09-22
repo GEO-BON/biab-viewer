@@ -99,7 +99,16 @@ export default function Sidebar(props: any) {
   useEffect(() => {
     const pips: any = [];
     if (Object.keys(pipelineData).length > 0) {
-      _.mapObject(pipelineData, (pd: any) => {
+      let sortable: any = [];
+      for (let o in pipelineData) {
+        sortable.push(pipelineData[o]);
+      }
+      if (sortable[0].weight) {
+        sortable.sort(function (a: any, b: any) {
+          return a.weight - b.weight;
+        });
+      }
+      sortable.map((pd: any) => {
         pips.push(
           <PipelineOutput
             key={pd.label}

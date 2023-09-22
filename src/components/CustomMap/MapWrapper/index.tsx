@@ -105,52 +105,6 @@ function MapWrapper(props: any) {
     setPopupOpen(false);
   };
 
-  const geo: FeatureCollection = {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [102.0, 0.5] },
-        properties: { prop0: "value0" },
-      },
-      {
-        type: "Feature",
-        geometry: {
-          type: "LineString",
-          coordinates: [
-            [102.0, 0.0],
-            [103.0, 1.0],
-            [104.0, 0.0],
-            [105.0, 1.0],
-          ],
-        },
-        properties: {
-          prop0: "value0",
-          prop1: 0.0,
-        },
-      },
-      {
-        type: "Feature",
-        geometry: {
-          type: "Polygon",
-          coordinates: [
-            [
-              [100.0, 0.0],
-              [101.0, 0.0],
-              [101.0, 1.0],
-              [100.0, 1.0],
-              [100.0, 0.0],
-            ],
-          ],
-        },
-        properties: {
-          prop0: "value0",
-          prop1: { this: "that" },
-        },
-      },
-    ],
-  };
-
   return (
     <Box
       style={{
@@ -159,7 +113,6 @@ function MapWrapper(props: any) {
       }}
     >
       <CustomLayer {...props} map={map} opacity={opacity} />
-      <GeoJSON data={geo}></GeoJSON>
       <MSMapSlider
         absolute={true}
         location={"bottom-left"}

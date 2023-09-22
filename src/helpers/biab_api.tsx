@@ -12,7 +12,7 @@ export const GetPipelineIO = async (pipeline_id: string) => {
   } catch (error) {
     result = { data: {} };
   }
-  return result.data.outputs;
+  return result.data;
 };
 
 export const GetPipelineRunOutputs = async (pipeline_run_id: string) => {
