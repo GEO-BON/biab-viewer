@@ -111,3 +111,31 @@ function readCoordinates(data: any, delimiter: string) {
     ),
   }));
 }
+
+const readRows = (data: any, delimiter: string) => {
+  const rowsWithColumns = parseCsvToRowsAndColumn(data, delimiter);
+  const headerRow = rowsWithColumns.splice(0, 1)[0];
+  return rowsWithColumns.map((row) => {
+    const thisRow: any = {};
+    headerRow.map((header: any, index: number) => {
+      if (row[index]) {
+        thisRow[stripQuotes(header)] = stripQuotes(row[index]);
+      }
+    });
+    return thisRow;
+  });
+};
+
+export async function CsvToObject(url: string, delimiter: string) {
+  return fetch(url)
+    .then((response) => {
+      if (response.ok) return response.text();
+      else return Promise.reject("Error " + response.status);
+    })
+    .then((result) => {
+      return readRows(result, delimiter);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}

@@ -68,20 +68,6 @@ function MapWrapper(props: any) {
 
   let numPopups = 0;
 
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: "../../img/dot-2x.png",
-    iconUrl: "../../img/dot.png",
-    iconSize: [11, 11],
-    iconAnchor: [6, 6],
-    popupAnchor: [0, -7],
-    shadowUrl: null,
-
-    // These are the default inversed drop icon:
-    // iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    // iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    // shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-  });
-
   useEffect(() => {
     GetCountryList().then((cl) => {
       setCountryList(cl.data);

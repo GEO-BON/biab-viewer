@@ -1,48 +1,13 @@
-import {
-  TextField,
-  Box,
-  Container,
-  Grid,
-  Typography,
-  Stack,
-  InputBase,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
+import { Box, Grid, Typography, Stack, Modal } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import {
-  GetStac,
-  GetStacSearch,
-  GetCOGBounds,
-  GetCountryList,
-  GetStateList,
-  GetCountryGeojson,
-  GetStateGeojson,
-} from "../../helpers/api";
-import CsvToGeojson from "../../helpers/csv_processing";
+import CustomTable from "../CustomTable";
+import CsvToGeojson, { CsvToObject } from "../../helpers/csv_processing";
 import { Item } from "./styles";
 import _ from "underscore";
-import {
-  CustomSelect,
-  CustomMenuItem,
-  CustomButton,
-  CustomButtonGreen,
-  CustomAutocomplete,
-} from "../CustomMUI";
 import { PipelineOutput } from "./PipelineOutput";
 
-import {
-  defaultYearList,
-  monthList,
-  timeSeriesCollections,
-  chelsaVariableList,
-  mammalsScenariosList,
-  mammalsYearsList,
-} from "./variables";
 import type { FeatureCollection } from "geojson";
-import L from "leaflet";
-import Draw from "leaflet-draw";
 
 export default function Sidebar(props: any) {
   const {
@@ -71,6 +36,8 @@ export default function Sidebar(props: any) {
   const { pathname } = useLocation();
   const [outputType, setOutputType] = useState("");
   const [selectedOutput, setSelectedOutput] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [modalContent, setModalContent] = useState(<></>);
 
   useEffect(() => {
     setPipelineRunId(pipeline_run_id);
@@ -85,11 +52,20 @@ export default function Sidebar(props: any) {
   const displayOutput = (output: string, type: string) => {
     if (type.includes("geotiff")) {
       setSelectedLayerURL(output);
-    } else if (type.includes("value")) {
+    } else if (type.includes("value") && type !== "table") {
       CsvToGeojson(`${import.meta.env.VITE_BIAB_HOST}${output}`, "\t").then(
         (r) => {
           if (r?.features?.length > 0) {
             setGeojsonOutput(r);
+          }
+        }
+      );
+    } else if (type === "table") {
+      CsvToObject(`${import.meta.env.VITE_BIAB_HOST}${output}`, "\t").then(
+        (r) => {
+          if (r) {
+            setModalContent(<CustomTable tableData={r}></CustomTable>);
+            setOpenModal(true);
           }
         }
       );
@@ -138,6 +114,9 @@ export default function Sidebar(props: any) {
     }
   };
 
+  const modalClose = () => {
+    setOpenModal(false);
+  };
   useEffect(() => {
     const handleScroll = (e: any) => {
       e.stopPropagation();
@@ -192,7 +171,7 @@ export default function Sidebar(props: any) {
               alignItems="center"
             >
               <Grid item sm={2}>
-                <img src="/logo.png" style={{ width: "100%" }} />
+                <img src="/viewer/logo.png" style={{ width: "100%" }} />
               </Grid>
               <Grid item sm={10}>
                 <Typography variant="h5" color="primary.light">
@@ -209,6 +188,15 @@ export default function Sidebar(props: any) {
           </Item>
         </Stack>
       </Grid>
+      <Modal
+        open={openModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        onClose={modalClose}
+        sx={{ width: "60vw", height: "80vh", margin: "auto" }}
+      >
+        <Box sx={{ width: "60vw", height: "80vh" }}>{modalContent}</Box>
+      </Modal>
     </Box>
   );
 }

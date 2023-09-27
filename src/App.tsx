@@ -13,7 +13,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 function App() {
   const [mapWidth, setMapWidth] = useState("70vw");
   return (
-    <Router basename="/">
+    <Router basename="/viewer">
       <ThemeProvider theme={theme}>
         <MapContainer
           zoom={3}
@@ -24,6 +24,7 @@ function App() {
             height: "calc(100vh)",
             left: `calc(100vw - ${mapWidth})`,
           }}
+          zoomSnap={0.25}
         >
           <Main key="main" />
         </MapContainer>

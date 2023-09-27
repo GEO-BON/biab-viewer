@@ -35,7 +35,7 @@ export const GetPipelineRunInputs = async (pipeline_run_id: string) => {
   try {
     result = await axios({
       method: "get",
-      baseURL: `${base_url}/output/${pipeline_run_id.replace(
+      baseURL: `${base_url}/output/${pipeline_run_id.replaceAll(
         ">",
         "/"
       )}/input.json`,
@@ -84,13 +84,27 @@ export const createPipeline4Display = async (pipeline_run_id: string) => {
         Object.keys(po.outputs).map(async (p: any) => {
           const script = p.split("|")[0];
           const output = p.split("|")[1];
-          const script_run_output_path = pro[script];
-          return await GetScriptOutputs(script_run_output_path).then(
-            (out: any) => {
-              return {
-                ...po.outputs[p],
-                outputs: `${base_url}${out[output]}`,
-              };
+          if (script in pro) {
+            const script_run_output_path = pro[script];
+            return await GetScriptOutputs(script_run_output_path).then(
+              (out: any) => {
+                return {
+                  ...po.outputs[p],
+                  outputs: `${base_url}${out[output]}`,
+                };
+              }
+            );
+          }
+          return await GetPipelineRunInputs(pipeline_run_id).then(
+            (inputs: any) => {
+              if (script in inputs) {
+                return {
+                  ...po.outputs[p],
+                  outputs: inputs[script].join(","),
+                };
+              } else {
+                return { outputs: [] };
+              }
             }
           );
         })

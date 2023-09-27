@@ -14,6 +14,7 @@ export default function MSMapSlider(props: any) {
   const opacityChange = (event: Event, newValue: any) => {
     event.stopPropagation();
     notifyChange(newValue);
+    return true;
   };
 
   const style = {
@@ -32,7 +33,9 @@ export default function MSMapSlider(props: any) {
           aria-label="Opacity"
           value={value ?? 100}
           valueLabelDisplay="auto"
-          onChangeCommitted={opacityChange}
+          onChangeCommitted={(e: any, newValue: any) =>
+            opacityChange(e, newValue)
+          }
           sx={{ color: "#333333" }}
         />
       </SliderContainer>

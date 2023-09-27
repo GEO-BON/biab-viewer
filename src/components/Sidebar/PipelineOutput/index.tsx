@@ -103,7 +103,21 @@ export function PipelineOutput(props: any) {
           See on map
         </CustomButtonGreen>
       )}
-      {!("type" in outputObj) && <Typography>{outputObj.output}</Typography>}
+      {!outputObj?.type?.includes("[]") &&
+        outputObj?.type?.includes("value") &&
+        "type" in outputObj && (
+          <CustomButtonGreen
+            key={`but-${outputObj.outputs}`}
+            onClick={(event: any) => {
+              handleClick(event, outputObj.outputs, "table");
+            }}
+          >
+            See Table
+          </CustomButtonGreen>
+        )}
+      {!("type" in outputObj) && (
+        <Typography color="secondary.light">{outputObj.outputs}</Typography>
+      )}
     </Item>
   );
 }

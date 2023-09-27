@@ -76,8 +76,8 @@ function CustomLayer(props: any) {
         fillColor: "#ff7800",
         color: "#000",
         weight: 1,
-        opacity: 0.2,
-        fillOpacity: 0.4,
+        opacity: 0.3,
+        fillOpacity: 0.5,
       };
       clearLayers();
       const l = L.geoJSON(
