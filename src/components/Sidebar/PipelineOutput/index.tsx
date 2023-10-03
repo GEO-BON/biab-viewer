@@ -237,6 +237,12 @@ export function PipelineOutput(props: any) {
       {!("type" in outputObj) && (
         <Typography color="secondary.light">{outputObj.outputs}</Typography>
       )}
+      {!outputObj?.type?.includes("[]") &&
+        (outputObj?.type?.includes("int") ||
+          outputObj?.type?.includes("float")) &&
+        "type" in outputObj && (
+          <Typography color="secondary.light">{outputObj.outputs}</Typography>
+        )}
     </Item>
   );
 }
