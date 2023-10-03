@@ -33,7 +33,7 @@ export function PipelineOutput(props: any) {
     outputType,
     generateStats,
   } = props;
-  const [forms, setForms] = useState(<></>);
+
   const [selectedItem, setSelectedPaperItem] = useState("");
 
   const outs = outputObj.outputs.split(",");
@@ -63,7 +63,7 @@ export function PipelineOutput(props: any) {
           1
         )}`}
       </Typography>
-      {outputObj?.type?.includes("[]") && (
+      {outputObj?.type?.includes("[]") && outputObj?.type?.includes("tif") && (
         <FormControl
           variant="standard"
           sx={{
@@ -105,30 +105,33 @@ export function PipelineOutput(props: any) {
           </Grid>
         </FormControl>
       )}
-      {!outputObj?.type?.includes("[]") && "type" in outputObj && (
-        <>
-          <CustomButtonGreen
-            key={`but-${outputObj.outputs}`}
-            onClick={(event: any) => {
-              handleClick(event, outputObj.outputs, outputObj.type);
-            }}
-          >
-            See on map
-          </CustomButtonGreen>
-          {outputObj?.type?.includes("tif") && (
-            <CustomButton
-              sx={{
-                display: "inline",
-              }}
-              onClick={() => generateStats(outputObj.outputs)}
-            >
-              <BarChartIcon />
-            </CustomButton>
-          )}
-        </>
-      )}
       {!outputObj?.type?.includes("[]") &&
-        outputObj?.type?.includes("value") &&
+        "type" in outputObj &&
+        outputObj?.type?.includes("tif") && (
+          <>
+            <CustomButtonGreen
+              key={`but-${outputObj.outputs}`}
+              onClick={(event: any) => {
+                handleClick(event, outputObj.outputs, outputObj.type);
+              }}
+            >
+              See on map
+            </CustomButtonGreen>
+            {outputObj?.type?.includes("tif") && (
+              <CustomButton
+                sx={{
+                  display: "inline",
+                }}
+                onClick={() => generateStats(outputObj.outputs)}
+              >
+                <BarChartIcon />
+              </CustomButton>
+            )}
+          </>
+        )}
+      {!outputObj?.type?.includes("[]") &&
+        (outputObj?.type?.includes("value") ||
+          outputObj?.type?.includes("tsv")) &&
         "type" in outputObj && (
           <CustomButtonGreen
             key={`but-${outputObj.outputs}`}
@@ -138,6 +141,98 @@ export function PipelineOutput(props: any) {
           >
             See Table
           </CustomButtonGreen>
+        )}
+      {outputObj?.type?.includes("[]") &&
+        (outputObj?.type?.includes("value") ||
+          outputObj?.type?.includes("tsv")) &&
+        "type" in outputObj && (
+          <FormControl
+            variant="standard"
+            sx={{
+              m: 1,
+              minWidth: 200,
+              width: "80%",
+            }}
+          >
+            <InputLabel id="collection-label">
+              <Typography color="primary.light">Choose layer</Typography>
+            </InputLabel>
+            <CustomSelect
+              key="table-select"
+              value={selectedItem}
+              onChange={(event: any) => handleSelect(event.target.value)}
+              label="Layer"
+            >
+              {outs.map((o: any) => (
+                <CustomMenuItem key={`it-${o}`} value={o}>
+                  {o.split("/").pop()}
+                </CustomMenuItem>
+              ))}
+            </CustomSelect>
+            <Grid container sx={{ alignItems: "center" }}>
+              <CustomButtonGreen
+                key={`but-${outputObj.outputs}`}
+                onClick={(event: any) => {
+                  handleClick(event, "", "table");
+                }}
+              >
+                See Table
+              </CustomButtonGreen>
+            </Grid>
+          </FormControl>
+        )}
+
+      {!outputObj?.type?.includes("[]") &&
+        (outputObj?.type?.includes("png") ||
+          outputObj?.type?.includes("jpeg")) &&
+        "type" in outputObj && (
+          <CustomButtonGreen
+            key={`but-${outputObj.outputs}`}
+            onClick={(event: any) => {
+              handleClick(event, outputObj.outputs, "image");
+            }}
+          >
+            See Image
+          </CustomButtonGreen>
+        )}
+      {outputObj?.type?.includes("[]") &&
+        (outputObj?.type?.includes("png") ||
+          outputObj?.type?.includes("jpeg")) &&
+        "type" in outputObj && (
+          <FormControl
+            variant="standard"
+            sx={{
+              m: 1,
+              minWidth: 200,
+              width: "80%",
+            }}
+          >
+            <InputLabel id="collection-label">
+              <Typography color="primary.light">Choose layer</Typography>
+            </InputLabel>
+            <CustomSelect
+              key="image-select"
+              value={selectedItem}
+              onChange={(event: any) => handleSelect(event.target.value)}
+              label="Layer"
+            >
+              {outs.map((o: any) => (
+                <CustomMenuItem key={`it-${o}`} value={o}>
+                  {o.split("/").pop()}
+                </CustomMenuItem>
+              ))}
+            </CustomSelect>
+            <Grid container sx={{ alignItems: "center" }}>
+              <CustomButtonGreen
+                key={`but-${outputObj.outputs}`}
+                onClick={(event: any) => {
+                  handleClick(event, "", "image");
+                }}
+              >
+                See Image
+              </CustomButtonGreen>
+            </Grid>
+          </FormControl>
         )}
       {!("type" in outputObj) && (
         <Typography color="secondary.light">{outputObj.outputs}</Typography>

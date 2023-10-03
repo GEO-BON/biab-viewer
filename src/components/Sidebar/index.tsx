@@ -17,6 +17,7 @@ import _ from "underscore";
 import { PipelineOutput } from "./PipelineOutput";
 
 import type { FeatureCollection } from "geojson";
+import { url } from "inspector";
 
 export default function Sidebar(props: any) {
   const {
@@ -95,6 +96,19 @@ export default function Sidebar(props: any) {
           }
         }
       );
+    } else if (type == "image") {
+      setModalContent(
+        <Grid
+          sx={{
+            background: `url("${import.meta.env.VITE_BIAB_HOST}${output}")`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            width: "80vw",
+            height: "80vh",
+          }}
+        ></Grid>
+      );
+      setOpenModal(true);
     }
   };
 

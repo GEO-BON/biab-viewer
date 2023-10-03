@@ -51,13 +51,6 @@ export default async function CsvToGeojson(
         };
       }
     });
-    /*const feat = features?.filter((f: any) => {
-      if (f) {
-        f.geometry.coordinates[0] > -180 && f.geometry.coordinates[0] < 180;
-      } else {
-        return false;
-      }
-    });*/
     return { type: "FeatureCollection", features: features };
   });
 }
