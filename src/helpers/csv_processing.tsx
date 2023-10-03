@@ -6,9 +6,18 @@ proj4.defs([
     "EPSG:4326",
     "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees",
   ],
+  ["EPSG:4269", "+proj=longlat +datum=NAD83 +no_defs"],
   [
     "EPSG:3857",
     "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs",
+  ],
+  [
+    "EPSG:3116",
+    "+proj=tmerc +lat_0=4.59620041666667 +lon_0=-74.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+  ],
+  [
+    "EPSG:6623",
+    "+proj=aea +lat_0=44 +lon_0=-68.5 +lat_1=60 +lat_2=46 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
   ],
 ]);
 
