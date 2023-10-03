@@ -16,7 +16,10 @@ import {
   GetCOGStatsGeojson,
   GetMultipleCOGStatsGeojson,
 } from "../../helpers/api";
-import { createPipeline4Display } from "../../helpers/biab_api";
+import {
+  createPipeline4Display,
+  GetPipelineRunInputs,
+} from "../../helpers/biab_api";
 import StatsModal from "../StatsModal";
 import { cmap } from "../../helpers/colormaps";
 import { createRangeLegendControl } from "../SimpleLegend";

@@ -12,7 +12,11 @@ proj4.defs([
   ],
 ]);
 
-export default async function CsvToGeojson(url: string, delimiter: string) {
+export default async function CsvToGeojson(
+  url: string,
+  delimiter: string,
+  crs: string
+) {
   return await CsvToArray(url, delimiter).then((r) => {
     let features: any = [];
     features = r?.map((row: any) => {
@@ -23,7 +27,7 @@ export default async function CsvToGeojson(url: string, delimiter: string) {
         row.pos[1] < 99999999
       ) {
         const coords = proj4(
-          "EPSG:3857",
+          crs,
           "EPSG:4326",
           row.pos.map((str: string) => parseFloat(str)).reverse()
         );

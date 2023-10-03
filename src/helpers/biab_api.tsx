@@ -108,13 +108,14 @@ export const createPipeline4Display = async (pipeline_run_id: string) => {
             }
           );
         })
-      ).then((prom) => {
+      ).then((prom: any) => {
         let desc: any = {
           name: "",
           author: "",
           description: "",
           external_link: "",
           pipeline_outputs: [],
+          pipeline_inputs_desc: po.inputs,
         };
         if (po.description) {
           desc = {
@@ -123,6 +124,7 @@ export const createPipeline4Display = async (pipeline_run_id: string) => {
             description: po.description,
             external_link: po.external_link,
             pipeline_outputs: [],
+            pipeline_inputs_desc: po.inputs,
           };
         }
         prom.forEach((f: any) => {

@@ -12,6 +12,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import CustomTable from "../CustomTable";
 import CsvToGeojson, { CsvToObject } from "../../helpers/csv_processing";
 import { Item } from "./styles";
+import { GetPipelineRunInputs } from "../../helpers/biab_api";
 import _ from "underscore";
 import { PipelineOutput } from "./PipelineOutput";
 
@@ -65,13 +66,26 @@ export default function Sidebar(props: any) {
     if (type.includes("geotiff")) {
       setSelectedLayerURL(output);
     } else if (type.includes("value") && type !== "table") {
-      CsvToGeojson(`${import.meta.env.VITE_BIAB_HOST}${output}`, "\t").then(
-        (r) => {
+      let crs = "EPSG:4326";
+      GetPipelineRunInputs(pipeline_run_id).then((p: any) => {
+        for (const m in pipelineData.pipeline_inputs_desc) {
+          if (
+            pipelineData.pipeline_inputs_desc[m].label.includes("proj") ||
+            pipelineData.pipeline_inputs_desc[m].label.includes("crs")
+          ) {
+            crs = p[m];
+          }
+        }
+        CsvToGeojson(
+          `${import.meta.env.VITE_BIAB_HOST}${output}`,
+          "\t",
+          crs
+        ).then((r) => {
           if (r?.features?.length > 0) {
             setGeojsonOutput(r);
           }
-        }
-      );
+        });
+      });
     } else if (type === "table") {
       CsvToObject(`${import.meta.env.VITE_BIAB_HOST}${output}`, "\t").then(
         (r) => {
@@ -252,7 +266,20 @@ export default function Sidebar(props: any) {
                 >
                   {pipelineTitle}
 
-                  <Box sx={{ maxHeight: "300px", overflowY: "scroll" }}>
+                  <Box
+                    sx={{
+                      maxHeight: "200px",
+                      overflowY: "auto",
+                      "&::-webkit-scrollbar": {
+                        background: "#444",
+                        width: "10px",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        background: "#666",
+                        borderRadius: "3px",
+                      },
+                    }}
+                  >
                     <Typography color="primary.contrastText" fontSize={14}>
                       {pipelineDescription}
                     </Typography>
