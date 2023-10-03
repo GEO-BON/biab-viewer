@@ -93,8 +93,9 @@ export const MainSubTitle = styled.div`
 export const Item = styled(Paper)(() => ({
   backgroundColor: "#fff",
   padding: "8px",
-  width: "100%",
+  width: "95%",
   border: "0px",
+  marginTop: "5px",
 }));
 
 export const SelectorTitle = styled(Box)(() => ({

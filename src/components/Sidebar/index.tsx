@@ -1,4 +1,12 @@
-import { Box, Grid, Typography, Stack, Modal } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Typography,
+  Stack,
+  Modal,
+  Paper,
+  Link,
+} from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import CustomTable from "../CustomTable";
@@ -18,6 +26,7 @@ export default function Sidebar(props: any) {
     geojson,
     setGeojson,
     setGeojsonOutput,
+    generateStats,
     map,
   } = props;
 
@@ -38,6 +47,9 @@ export default function Sidebar(props: any) {
   const [selectedOutput, setSelectedOutput] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [modalContent, setModalContent] = useState(<></>);
+  const [pipelineTitle, setPipelineTitle] = useState(<></>);
+  const [pipelineDescription, setPipelineDescription] = useState("");
+  const [pipelineAuthors, setPipelineAuthors] = useState(<></>);
 
   useEffect(() => {
     setPipelineRunId(pipeline_run_id);
@@ -74,10 +86,53 @@ export default function Sidebar(props: any) {
 
   useEffect(() => {
     const pips: any = [];
-    if (Object.keys(pipelineData).length > 0) {
+    if (
+      pipelineData.pipeline_outputs &&
+      Object.keys(pipelineData?.pipeline_outputs).length > 0
+    ) {
+      setPipelineTitle(
+        <Link
+          href={pipelineData.external_link}
+          target="_blank"
+          color="primary.main"
+        >
+          <Typography color="primary.contrastText" sx={{ fontWeight: "bold" }}>
+            {pipelineData.name}
+          </Typography>
+        </Link>
+      );
+      setPipelineDescription(pipelineData.description);
+      if (pipelineData.author.length > 0) {
+        const auths = pipelineData.author.map((a: any, i: number, arr: any) => {
+          let divider = i < arr.length - 1 ? <>, </> : "";
+          if (a.identifier) {
+            return (
+              <Link target="_blank" href={`"${a.identifier}"`}>
+                <Typography
+                  fontSize={11}
+                  color="primary.contrastText"
+                  sx={{ display: "inline" }}
+                >
+                  {a.name}
+                  {divider}
+                </Typography>
+              </Link>
+            );
+          } else {
+            return (
+              <Typography
+                fontSize={11}
+                color="primary.contrastText"
+                sx={{ display: "inline" }}
+              >{`${a.name}${divider}`}</Typography>
+            );
+          }
+        });
+        setPipelineAuthors(auths);
+      }
       let sortable: any = [];
-      for (let o in pipelineData) {
-        sortable.push(pipelineData[o]);
+      for (let o in pipelineData.pipeline_outputs) {
+        sortable.push(pipelineData.pipeline_outputs[o]);
       }
       if (sortable[0].weight) {
         sortable.sort(function (a: any, b: any) {
@@ -94,12 +149,13 @@ export default function Sidebar(props: any) {
             outputType={outputType}
             selectedOutput={selectedOutput}
             setSelectedOutput={setSelectedOutput}
+            generateStats={generateStats}
           />
         );
       });
       setPips(pips);
     }
-  }, [pipelineData]);
+  }, [pipelineData.pipeline_outputs]);
 
   const drawPolygon = () => {
     const el = document.getElementsByClassName("leaflet-draw-draw-polygon");
@@ -180,10 +236,33 @@ export default function Sidebar(props: any) {
               </Grid>
             </Grid>
             <Box>
-              <Typography color="primary.contrastText">
+              <Typography color="secondary.light">
                 Explore results from a Bon-in-a-Box analysis pipeline
               </Typography>
             </Box>
+            {pipelineTitle && (
+              <Box>
+                <Paper
+                  sx={{
+                    padding: "15px",
+                    margin: "10px 30px 10px 0px",
+                    border: "1.5px solid #222",
+                  }}
+                  elevation={5}
+                >
+                  {pipelineTitle}
+
+                  <Box sx={{ maxHeight: "300px", overflowY: "scroll" }}>
+                    <Typography color="primary.contrastText" fontSize={14}>
+                      {pipelineDescription}
+                    </Typography>
+                    <Typography color="primary.contrastText" fontSize={11}>
+                      By: {pipelineAuthors}
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Box>
+            )}
             <Box>{pips}</Box>
           </Item>
         </Stack>

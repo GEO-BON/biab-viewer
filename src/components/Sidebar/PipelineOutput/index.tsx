@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import { Item } from "../styles";
 import _ from "underscore";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 export function PipelineOutput(props: any) {
   const {
@@ -30,15 +31,16 @@ export function PipelineOutput(props: any) {
     setOutputType,
     selectedOutput,
     outputType,
+    generateStats,
   } = props;
   const [forms, setForms] = useState(<></>);
-  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedItem, setSelectedPaperItem] = useState("");
 
   const outs = outputObj.outputs.split(",");
 
   const handleSelect = (value: string) => {
     setSelectedOutput(value);
-    setSelectedItem(value);
+    setSelectedPaperItem(value);
   };
 
   const handleClick = (event: any, out: string, ot: string) => {
@@ -85,23 +87,45 @@ export function PipelineOutput(props: any) {
               </CustomMenuItem>
             ))}
           </CustomSelect>
-          <CustomButtonGreen
-            key={`but-${outputObj.outputs}`}
-            onClick={(event: any) => handleClick(event, "", outputObj.type)}
-          >
-            See on map
-          </CustomButtonGreen>
+          <Grid container sx={{ alignItems: "center" }}>
+            <CustomButtonGreen
+              key={`but-${outputObj.outputs}`}
+              onClick={(event: any) => handleClick(event, "", outputObj.type)}
+            >
+              See on map
+            </CustomButtonGreen>
+            <CustomButton
+              sx={{
+                display: "inline",
+              }}
+              onClick={() => generateStats(selectedItem)}
+            >
+              <BarChartIcon />
+            </CustomButton>
+          </Grid>
         </FormControl>
       )}
       {!outputObj?.type?.includes("[]") && "type" in outputObj && (
-        <CustomButtonGreen
-          key={`but-${outputObj.outputs}`}
-          onClick={(event: any) => {
-            handleClick(event, outputObj.outputs, outputObj.type);
-          }}
-        >
-          See on map
-        </CustomButtonGreen>
+        <>
+          <CustomButtonGreen
+            key={`but-${outputObj.outputs}`}
+            onClick={(event: any) => {
+              handleClick(event, outputObj.outputs, outputObj.type);
+            }}
+          >
+            See on map
+          </CustomButtonGreen>
+          {outputObj?.type?.includes("tif") && (
+            <CustomButton
+              sx={{
+                display: "inline",
+              }}
+              onClick={() => generateStats(outputObj.outputs)}
+            >
+              <BarChartIcon />
+            </CustomButton>
+          )}
+        </>
       )}
       {!outputObj?.type?.includes("[]") &&
         outputObj?.type?.includes("value") &&

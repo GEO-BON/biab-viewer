@@ -109,9 +109,24 @@ export const createPipeline4Display = async (pipeline_run_id: string) => {
           );
         })
       ).then((prom) => {
-        let desc: any = [];
+        let desc: any = {
+          name: "",
+          author: "",
+          description: "",
+          external_link: "",
+          pipeline_outputs: [],
+        };
+        if (po.description) {
+          desc = {
+            name: po.name,
+            author: po.author,
+            description: po.description,
+            external_link: po.external_link,
+            pipeline_outputs: [],
+          };
+        }
         prom.forEach((f: any) => {
-          desc.push(f.value);
+          desc.pipeline_outputs.push(f.value);
         });
         return desc;
       });

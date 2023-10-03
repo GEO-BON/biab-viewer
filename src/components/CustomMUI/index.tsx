@@ -35,7 +35,14 @@ export const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
 export const CustomButton = styled(Button)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   border: `1px solid ${theme.palette.primary.contrastText}`,
-  padding: "4px 0px",
+  padding: "2px 2px 3px 2px",
+  width: "20px",
+  height: "35px",
+  margin: "15px 15px 6px 15px",
+  minWidth: "40px",
+  "& hover:": {
+    background: theme.palette.primary.main,
+  },
 }));
 
 export const CustomButtonGreen = styled(Button)(({ theme }) => ({

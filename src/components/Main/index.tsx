@@ -170,36 +170,23 @@ export default function Main(props: any) {
     }
   };
 
-  const generateStats = (place = "") => {
+  const generateStats = (layerUrl = "") => {
+    if (selectedLayerURL === "" && layerUrl !== "") {
+      setSelectedLayerURL(layerUrl);
+    }
     setRasterStats({});
     setTimeSeriesStats({});
     setOpenStatsModal(true);
-    const gg = { ...geojson };
-    if (place !== "" && geojson?.features.length > 0) {
-      gg.features = geojson.features.filter(
-        (g: any) => g.properties.place === place
-      );
-    }
-    if (gg?.features.length > 0) {
-      let i = 0;
-      GetCOGStatsGeojson(selectedLayerURL, gg).then((g: any) => {
-        const rs: any = {};
-        if (g.data) {
-          g.data.features.map((m: any) => {
-            if (m.properties.place === "Area") {
-              m.properties.place = `Area_${i}`;
-              i += 1;
-            }
-            rs[m.properties.place] = m.properties.statistics;
-          });
-          setRasterStats(rs);
-        }
-      });
-    }
-    if (selectedCountry && selectedLayerURL) {
-      setOpenStatsModal(true);
-      setShowStatsButton(true);
-    }
+    let i = 0;
+    GetCOGStats(layerUrl, false).then((g: any) => {
+      const rs: any = {};
+      if (g.data) {
+        setRasterStats({
+          "Selected layer": { b1: g.data[Object.keys(g.data)[0]] },
+        });
+      }
+    });
+    setOpenStatsModal(true);
   };
 
   const mapProps = {

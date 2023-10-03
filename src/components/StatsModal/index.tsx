@@ -1,14 +1,14 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { cmap } from '../../helpers/colormaps';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import Barchart from './barchart';
-import TimeSeries from './timeseries';
+import React, { useRef, useEffect, useState } from "react";
+import { cmap } from "../../helpers/colormaps";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import Barchart from "./barchart";
+import TimeSeries from "./timeseries";
 import LinearProgress, {
   linearProgressClasses,
-} from '@mui/material/LinearProgress';
-import { styled } from '@mui/material/styles';
+} from "@mui/material/LinearProgress";
+import { styled } from "@mui/material/styles";
 
 export default function StatsModal(props: any) {
   const {
@@ -27,14 +27,14 @@ export default function StatsModal(props: any) {
   const [bounds, setBounds] = useState([0, 100]);
 
   const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "50%",
     minWidth: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    bgcolor: "background.paper",
+    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
   };
@@ -43,11 +43,11 @@ export default function StatsModal(props: any) {
     height: 10,
     borderRadius: 5,
     [`&.${linearProgressClasses.colorPrimary}`]: {
-      backgroundColor: '#038c7c',
+      backgroundColor: "#038c7c",
     },
     [`& .${linearProgressClasses.bar}`]: {
       borderRadius: 5,
-      backgroundColor: 'white',
+      backgroundColor: "white",
     },
   }));
 
@@ -116,7 +116,7 @@ export default function StatsModal(props: any) {
     >
       <Box sx={style}>
         {!showHisto && !showTS && (
-          <Box sx={{ width: '100%' }}>
+          <Box sx={{ width: "100%" }}>
             <BorderLinearProgress />
           </Box>
         )}
@@ -136,7 +136,7 @@ export default function StatsModal(props: any) {
         {showTS && (
           <>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Time series for selected areas
+              Time series for selected layer
             </Typography>
             {rasterStats && (
               <>
