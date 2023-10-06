@@ -118,7 +118,11 @@ function readCoordinates(data: any, delimiter: string) {
   }));
 }
 
-const readRows = (data: any, delimiter: string) => {
+const readRows = (data: any) => {
+  let delimiter = "\t";
+  if (data.includes(",")) {
+    delimiter = ",";
+  }
   const rowsWithColumns = parseCsvToRowsAndColumn(data, delimiter);
   const headerRow = rowsWithColumns.splice(0, 1)[0];
   return rowsWithColumns.map((row) => {
@@ -132,14 +136,14 @@ const readRows = (data: any, delimiter: string) => {
   });
 };
 
-export async function CsvToObject(url: string, delimiter: string) {
+export async function CsvToObject(url: string) {
   return fetch(url)
     .then((response) => {
       if (response.ok) return response.text();
       else return Promise.reject("Error " + response.status);
     })
     .then((result) => {
-      return readRows(result, delimiter);
+      return readRows(result);
     })
     .catch((error) => {
       console.log(error);

@@ -98,9 +98,13 @@ export const createPipeline4Display = async (pipeline_run_id: string) => {
           return await GetPipelineRunInputs(pipeline_run_id).then(
             (inputs: any) => {
               if (script in inputs) {
+                let inp = inputs[script];
+                if (Array.isArray(inp)) {
+                  inp = inputs[script].join(",");
+                }
                 return {
                   ...po.outputs[p],
-                  outputs: inputs[script].join(","),
+                  outputs: inp,
                 };
               } else {
                 return { outputs: [] };

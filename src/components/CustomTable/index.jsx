@@ -12,15 +12,18 @@ import { colors } from "../../styles";
 
 export default function CustomTable(props) {
   const { tableData } = props;
-  const [rowContent, setRowContent] = useState(() => {
-    return "";
-  });
-  const [headers, setHeaders] = useState(() => {
-    return "";
-  });
+
+  const tableD = tableData.filter(
+    (f) =>
+      !Object.values(f).every((e) => {
+        e === "";
+      })
+  );
+
+  const head = Object.keys(tableData[0]);
 
   const itemContent = (index, data) => {
-    const head = Object.keys(tableData[0]);
+    const head = Object.keys(tableD[0]);
     if (data) {
       return head.map((h) => (
         <TableCell
@@ -38,7 +41,7 @@ export default function CustomTable(props) {
   };
 
   const headerContent = () => {
-    const head = Object.keys(tableData[0]);
+    const head = Object.keys(tableD[0]);
     return (
       <TableRow>
         {head.map((column) => (
@@ -59,13 +62,13 @@ export default function CustomTable(props) {
   };
 
   useEffect(() => {
-    const head = Object.keys(tableData[0]);
-  }, [tableData]);
+    const head = Object.keys(tableD[0]);
+  }, [tableD]);
 
   return (
-    <Paper style={{ height: "100%", width: "100%" }}>
+    <Paper style={{ height: "100%", width: "100%", padding: "30px" }}>
       <TableVirtuoso
-        data={tableData}
+        data={tableD}
         fixedHeaderContent={headerContent}
         itemContent={itemContent}
         color="primary.contrastText"

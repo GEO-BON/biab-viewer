@@ -27,6 +27,7 @@ export default function BarChart({ data, bounds }: Props) {
         }),
         Plot.axisX(d3.ticks(bounds[0], bounds[1], 15), {
           label: "Value",
+          tickFormat: ".2f",
         }),
         Plot.axisY({ label: "Frequency", marginTop: 100 }),
         Plot.ruleY([0]),

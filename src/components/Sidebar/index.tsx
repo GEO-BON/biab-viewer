@@ -18,6 +18,9 @@ import { PipelineOutput } from "./PipelineOutput";
 
 import type { FeatureCollection } from "geojson";
 import { url } from "inspector";
+import YAML from "yaml";
+import axios from "axios";
+import Markdown from "markdown-to-jsx";
 
 export default function Sidebar(props: any) {
   const {
@@ -66,7 +69,7 @@ export default function Sidebar(props: any) {
   const displayOutput = (output: string, type: string) => {
     if (type.includes("geotiff")) {
       setSelectedLayerURL(output);
-    } else if (type.includes("value") && type !== "table") {
+    } else if (type === "points") {
       let crs = "EPSG:4326";
       GetPipelineRunInputs(pipeline_run_id).then((p: any) => {
         for (const m in pipelineData.pipeline_inputs_desc) {
@@ -87,16 +90,18 @@ export default function Sidebar(props: any) {
           }
         });
       });
-    } else if (type === "table") {
-      CsvToObject(`${import.meta.env.VITE_BIAB_HOST}${output}`, "\t").then(
-        (r) => {
-          if (r) {
-            setModalContent(<CustomTable tableData={r}></CustomTable>);
-            setOpenModal(true);
-          }
+    } else if (
+      type.includes("value") ||
+      type.includes("csv") ||
+      type.includes("tsv")
+    ) {
+      CsvToObject(`${import.meta.env.VITE_BIAB_HOST}${output}`).then((r) => {
+        if (r) {
+          setModalContent(<CustomTable tableData={r}></CustomTable>);
+          setOpenModal(true);
         }
-      );
-    } else if (type == "image") {
+      });
+    } else if (type === "image") {
       setModalContent(
         <Grid
           sx={{
@@ -109,6 +114,31 @@ export default function Sidebar(props: any) {
         ></Grid>
       );
       setOpenModal(true);
+    } else if (type.includes("json")) {
+      axios({
+        method: "get",
+        baseURL: output,
+      }).then((r: any) => {
+        const doc: any = new YAML.Document();
+        doc.contents = r.data;
+        setModalContent(
+          <Grid
+            sx={{
+              width: "40vw",
+              height: "60vh",
+              background: "#444",
+              padding: "30px",
+              color: "#aaa",
+              overflowY: "scroll",
+            }}
+          >
+            <Typography sx={{ color: "#aaa", whiteSpace: "pre-line" }}>
+              {doc.toString()}
+            </Typography>
+          </Grid>
+        );
+        setOpenModal(true);
+      });
     }
   };
 
@@ -168,18 +198,21 @@ export default function Sidebar(props: any) {
         });
       }
       sortable.map((pd: any) => {
-        pips.push(
-          <PipelineOutput
-            key={pd.label}
-            outputObj={pd}
-            displayOutput={displayOutput}
-            setOutputType={setOutputType}
-            outputType={outputType}
-            selectedOutput={selectedOutput}
-            setSelectedOutput={setSelectedOutput}
-            generateStats={generateStats}
-          />
-        );
+        if (pd) {
+          return pips.push(
+            <PipelineOutput
+              key={pd.label}
+              outputObj={pd}
+              displayOutput={displayOutput}
+              setOutputType={setOutputType}
+              outputType={outputType}
+              selectedOutput={selectedOutput}
+              setSelectedOutput={setSelectedOutput}
+              generateStats={generateStats}
+            />
+          );
+        }
+        return false;
       });
       setPips(pips);
     }
@@ -295,7 +328,7 @@ export default function Sidebar(props: any) {
                     }}
                   >
                     <Typography color="primary.contrastText" fontSize={14}>
-                      {pipelineDescription}
+                      <Markdown>{pipelineDescription}</Markdown>
                     </Typography>
                     <Typography color="primary.contrastText" fontSize={11}>
                       By: {pipelineAuthors}
